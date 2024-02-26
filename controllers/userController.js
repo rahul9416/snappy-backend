@@ -86,7 +86,6 @@ module.exports.allUsers = async (req, res, next) => {
 module.exports.updateNotification = async (req, res, next) => {
     try {
         const {uid, from, lastMessage, time, notification} = req.body;
-        console.log(req.body, 'request recieved')
         let data = await User.find({_id: uid}).select([
             "email", "username", "avatarImage", "_id", "uid", "notifications"
         ]);
