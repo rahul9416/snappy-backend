@@ -30,11 +30,15 @@ app.use("/api/messages", msgRoutes)
 
 connectToMongo();
 
+const corsOptions = {
+  origin: 'https://snapppy.netlify.app',
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
+  credentials: true,  // If you need to send cookies with requests
+};
+
 const io = socket(server, {
-    cors: {
-        origin: "http://localhost:3000",
-        credentials: true,
-    }
+    cors: corsOptions
 });
 
 global.onlineUsers = new Map();
@@ -49,7 +53,7 @@ io.on("connection", (socket) => {
         const sendUserSocket = onlineUsers.get(data.to);
         if(sendUserSocket) {
             socket.to(sendUserSocket).emit("msg-recieved", {msg: data.message, time: data.timeStamp, to: data.to, from: data.from, uuid: new Date()});
-            await axios.post('http://localhost:5000/api/auth/updateNotification', {
+            await axios.post('https://snappy-backend-gx2n.onrender.com/api/auth/updateNotification', {
                 uid: data.to,
                 from: data.from,
                 lastMessage: data.message,
